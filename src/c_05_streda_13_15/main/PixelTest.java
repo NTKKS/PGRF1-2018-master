@@ -32,13 +32,22 @@ public class PixelTest {
 
         renderer = new Renderer(img, canvas);
 
-        renderer.drawPixel(100, 50, Color.GREEN.getRGB());
+        //renderer.drawPixel(100, 50, Color.GREEN.getRGB());
         // 0x00ff00 == Color.GREEN.getRGB()
+
+        //renderer.drawLine(0,1,8,4,0xffff00);
 
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+            }
+        });
+
+        canvas.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                renderer.drawLine(400,300,e.getX(),e.getY(),0xffffff);
             }
         });
     }
@@ -50,6 +59,7 @@ public class PixelTest {
         canvas.getGraphics().drawImage(img, 0, 0, null);
         // pro zájemce - co dělá observer - https://stackoverflow.com/a/1684476
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(PixelTest::new);
