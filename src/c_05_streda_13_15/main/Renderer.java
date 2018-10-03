@@ -31,11 +31,29 @@ public class Renderer {
         float k = dy / (float) dx;
         float q = y1 - k * x1;
 
-        for (int x = x1; x<= x2; x++){
-            int y = Math.round(k*x+q);
-            drawPixel(x,y,color);
-        }
+        if(Math.abs(k) <1) {
+        //ridici osa je X
 
+            if (x2 < x1) {
+                int pomocna = x1;
+                x1 = x2;
+                x2 = pomocna;
+                // prohozeni y vhodne, ale neni aspon ted nutne
+            }
+
+            for (int x = x1; x <= x2; x++) {
+                int y = Math.round(k * x + q);
+                drawPixel(x, y, color);
+            }
+        } else {
+            //řídící osa je y
+        }
+    }
+
+    public void clear(){
+        Graphics g = img.getGraphics();
+        g.setColor(Color.BLACK);
+        g.clearRect(0,0,800,600);
     }
 
     public void  drawPixel(int x, int y, int color) {

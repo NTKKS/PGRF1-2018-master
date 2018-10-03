@@ -47,6 +47,7 @@ public class PixelTest {
         canvas.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                renderer.clear();
                 renderer.drawLine(400,300,e.getX(),e.getY(),0xffffff);
             }
         });
