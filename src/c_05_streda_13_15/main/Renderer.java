@@ -47,6 +47,17 @@ public class Renderer {
             }
         } else {
             //řídící osa je y
+            if (y2 < y1) {
+                int pomocna = y1;
+                y1 = y2;
+                y2 = pomocna;
+                // prohozeni y vhodne, ale neni aspon ted nutne
+            }
+
+            for (int y = y1; y <= y2; y++) {
+                int x = Math.round((y-q)/k);
+                drawPixel(x, y, color);
+            }
         }
     }
 
