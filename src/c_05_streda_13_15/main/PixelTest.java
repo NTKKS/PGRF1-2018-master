@@ -2,6 +2,8 @@ package c_05_streda_13_15.main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -32,9 +34,9 @@ public class PixelTest {
 
         renderer = new Renderer(img, canvas);
 
+        //zkusebni vykresleni
         //renderer.drawPixel(100, 50, Color.GREEN.getRGB());
         // 0x00ff00 == Color.GREEN.getRGB()
-
         //renderer.drawLine(0,1,8,4,0xffff00);
 
         canvas.addMouseListener(new MouseAdapter() {
@@ -48,9 +50,20 @@ public class PixelTest {
             @Override
             public void mouseDragged(MouseEvent e) {
                 renderer.clear();
-                renderer.drawLine(400,300,e.getX(),e.getY(),0xffffff);
+                renderer.drawLineDDA(400,300,e.getX(),e.getY(),0xffffff);
             }
         });
+
+        canvas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //pri zmacknuti klavesy C se vymaže canvas
+                if (e.getKeyCode() == KeyEvent.VK_C){
+                    renderer.clear();
+                }
+            }
+        });
+        canvas.requestFocus();
     }
 
     private void drawPixel(int x, int y, int color) {

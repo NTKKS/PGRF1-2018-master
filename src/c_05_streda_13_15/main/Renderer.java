@@ -61,6 +61,28 @@ public class Renderer {
         }
     }
 
+    public void drawLineDDA(int x1,int y1,int x2,int y2,int color){
+        float x,y,g,h;
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        x = x1; y = y1;
+        float k = dy/(float)dx;
+
+        if (Math.abs(k)<1){
+            //ridici osa x
+            g = 1; h=k;
+        }else {
+            //ridici osa y
+            g = 1/k; h=1;
+        }
+
+        for (int i=0; i <= Math.max(dx,dy); i++){
+            drawPixel(Math.round(x),Math.round(y),color);
+            x = x+g;
+            y = y+h;
+        }
+    }
+
     public void clear(){
         Graphics g = img.getGraphics();
         g.setColor(Color.BLACK);
