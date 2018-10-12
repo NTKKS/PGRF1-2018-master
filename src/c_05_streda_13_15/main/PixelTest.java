@@ -10,10 +10,11 @@ import java.awt.image.BufferedImage;
 
 public class PixelTest {
 
-    private JFrame window;
+    private JFrame window; // hlavní okno
     private BufferedImage img; // objekt pro zápis pixelů
     private Canvas canvas; // plátno pro vykreslení BufferedImage
-    private Renderer renderer;
+    private Renderer renderer; //implementace vykreslovacich algoritmu
+    private VertexPos vertexPos; //pro ukladani vrcholu n-uhelniku
 
     public PixelTest() {
         window = new JFrame();
@@ -32,7 +33,9 @@ public class PixelTest {
         window.add(canvas); // vložit plátno do okna
         window.setVisible(true); // zobrazit okno
 
+        //inicializace
         renderer = new Renderer(img, canvas);
+        vertexPos = new VertexPos();
 
         //zkusebni vykresleni
         //renderer.drawPixel(100, 50, Color.GREEN.getRGB());
@@ -42,15 +45,27 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                //vykresleni jednoho pixelu kliknutím
                 renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+                //pridej vrchol do listu
+                vertexPos.addPos(e.getX(), e.getY());
+                if (vertexPos.ready()){
+                    renderer.drawLineDDA(vertexPos.getX(), vertexPos.getY(), e.getX(), e.getY(), 0xffffff);
+                }
             }
         });
 
-        canvas.addMouseMotionListener(new MouseAdapter() {
+        canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseDragged(MouseEvent e) {
-                renderer.clear();
-                renderer.drawLineDDA(400, 300, e.getX(), e.getY(), 0xffffff);
+            public void mousePressed(MouseEvent f) {
+                canvas.addMouseMotionListener(new MouseAdapter() {
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        renderer.clear();
+                        vertexPos.clear();
+                        renderer.drawLineDDA(f.getX(), f.getY(), e.getX(), e.getY(), 0xffffff);
+                    }
+                });
             }
         });
 
@@ -60,6 +75,7 @@ public class PixelTest {
                 //pri zmacknuti klavesy C se vymaže canvas
                 if (e.getKeyCode() == KeyEvent.VK_C) {
                     renderer.clear();
+                    vertexPos.clear();
                 }
             }
         });

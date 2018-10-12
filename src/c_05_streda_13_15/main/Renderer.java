@@ -38,7 +38,6 @@ public class Renderer {
                 int pomocna = x1;
                 x1 = x2;
                 x2 = pomocna;
-                // prohozeni y vhodne, ale neni aspon ted nutne
             }
 
             for (int x = x1; x <= x2; x++) {
@@ -51,7 +50,6 @@ public class Renderer {
                 int pomocna = y1;
                 y1 = y2;
                 y2 = pomocna;
-                // prohozeni y vhodne, ale neni aspon ted nutne
             }
 
             for (int y = y1; y <= y2; y++) {
@@ -98,20 +96,19 @@ public class Renderer {
             drawPixel(Math.round(x), Math.round(y), color);
             x = x + g;
             y = y + h;
-            System.out.println("k" + "\t" + k);
         }
     }
 
     public void clear() {
+        //vyčisti canvas
         Graphics g = img.getGraphics();
         g.setColor(Color.BLACK);
         g.clearRect(0, 0, 800, 600);
     }
 
     public void drawPixel(int x, int y, int color) {
-        //nastavit pixel do img
+        //vykresli pixel
         img.setRGB(x, y, color);
     }
-
 
 }
