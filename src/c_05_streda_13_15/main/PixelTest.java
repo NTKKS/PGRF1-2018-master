@@ -50,7 +50,7 @@ public class PixelTest {
             @Override
             public void mouseDragged(MouseEvent e) {
                 renderer.clear();
-                renderer.drawLineDDA(400,300,e.getX(),e.getY(),0xffffff);
+                renderer.drawLineDDA(400, 300, e.getX(), e.getY(), 0xffffff);
             }
         });
 
@@ -58,7 +58,7 @@ public class PixelTest {
             @Override
             public void keyPressed(KeyEvent e) {
                 //pri zmacknuti klavesy C se vymaže canvas
-                if (e.getKeyCode() == KeyEvent.VK_C){
+                if (e.getKeyCode() == KeyEvent.VK_C) {
                     renderer.clear();
                 }
             }

@@ -8,7 +8,7 @@ import java.util.TimerTask;
 public class Renderer {
     private BufferedImage img;
     private Canvas canvas;
-    private static final int FPS = 1000/30;
+    private static final int FPS = 1000 / 30;
 
     public Renderer(BufferedImage img, Canvas canvas) {
         this.img = img;
@@ -20,19 +20,19 @@ public class Renderer {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                canvas.getGraphics().drawImage(img, 0,0,null);
-                }
-        },0, FPS);
+                canvas.getGraphics().drawImage(img, 0, 0, null);
+            }
+        }, 0, FPS);
     }
 
     public void drawLine(int x1, int y1, int x2, int y2, int color) {
         int dx = x2 - x1;
-        int dy = y2 -y1;
+        int dy = y2 - y1;
         float k = dy / (float) dx;
         float q = y1 - k * x1;
 
-        if(Math.abs(k) <1) {
-        //ridici osa je X
+        if (Math.abs(k) < 1) {
+            //ridici osa je X
 
             if (x2 < x1) {
                 int pomocna = x1;
@@ -55,59 +55,62 @@ public class Renderer {
             }
 
             for (int y = y1; y <= y2; y++) {
-                int x = Math.round((y-q)/k);
+                int x = Math.round((y - q) / k);
                 drawPixel(x, y, color);
             }
         }
     }
 
-    public void drawLineDDA(int x1,int y1,int x2,int y2,int color){
-        float x,y,g,h;
+    public void drawLineDDA(int x1, int y1, int x2, int y2, int color) {
+        float x, y, g, h;
         int dx = x2 - x1;
         int dy = y2 - y1;
-        x = x1; y = y1;
-        float k = dy/(float)dx;
+        x = x1;
+        y = y1;
+        float k = dy / (float) dx;
 
-        if (Math.abs(k)<1){
-            if (dx>0) {
+        if (Math.abs(k) < 1) {
+            if (dx > 0) {
                 g = 1;
                 h = k;
             } else {
                 g = -1;
                 h = -k;
             }
-        }else {
-            if (dy>0) {
+        } else {
+            if (dy > 0) {
                 g = 1 / k;
                 h = 1;
             } else {
-                g = -(1/k);
+                g = -(1 / k);
                 h = -1;
             }
         }
 
         int length;
-        if (Math.abs(dx)>Math.abs(dy)){
+        if (Math.abs(dx) > Math.abs(dy)) {
             length = Math.abs(dx);
-        } else { length = Math.abs(dy);}
+        } else {
+            length = Math.abs(dy);
+        }
 
-        for (int i=0; i <= length; i++){
-            drawPixel(Math.round(x),Math.round(y),color);
-            x = x+g;
-            y = y+h;
-            System.out.println("k"+"\t"+k);
+        for (int i = 0; i <= length; i++) {
+            drawPixel(Math.round(x), Math.round(y), color);
+            x = x + g;
+            y = y + h;
+            System.out.println("k" + "\t" + k);
         }
     }
 
-    public void clear(){
+    public void clear() {
         Graphics g = img.getGraphics();
         g.setColor(Color.BLACK);
-        g.clearRect(0,0,800,600);
+        g.clearRect(0, 0, 800, 600);
     }
 
-    public void  drawPixel(int x, int y, int color) {
+    public void drawPixel(int x, int y, int color) {
         //nastavit pixel do img
-        img.setRGB(x,y,color);
+        img.setRGB(x, y, color);
     }
 
 
