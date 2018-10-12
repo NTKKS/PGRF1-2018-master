@@ -69,17 +69,33 @@ public class Renderer {
         float k = dy/(float)dx;
 
         if (Math.abs(k)<1){
-            //ridici osa x
-            g = 1; h=k;
+            if (dx>0) {
+                g = 1;
+                h = k;
+            } else {
+                g = -1;
+                h = -k;
+            }
         }else {
-            //ridici osa y
-            g = 1/k; h=1;
+            if (dy>0) {
+                g = 1 / k;
+                h = 1;
+            } else {
+                g = -(1/k);
+                h = -1;
+            }
         }
 
-        for (int i=0; i <= Math.max(dx,dy); i++){
+        int length;
+        if (Math.abs(dx)>Math.abs(dy)){
+            length = Math.abs(dx);
+        } else { length = Math.abs(dy);}
+
+        for (int i=0; i <= length; i++){
             drawPixel(Math.round(x),Math.round(y),color);
             x = x+g;
             y = y+h;
+            System.out.println("k"+"\t"+k);
         }
     }
 
