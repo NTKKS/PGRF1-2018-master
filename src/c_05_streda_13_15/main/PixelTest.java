@@ -49,8 +49,18 @@ public class PixelTest {
                 renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
                 //pridej vrchol do listu
                 vertexPos.addPos(e.getX(), e.getY());
-                if (vertexPos.ready()){
+                //po zadani druheho vrcholu
+                if (vertexPos.ready()) {
+                    renderer.clear();
+                    //dalsi vrchol
                     renderer.drawLineDDA(vertexPos.getX(), vertexPos.getY(), e.getX(), e.getY(), 0xffffff);
+                    //uzavri n-uhelnik
+                    renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xffffff);
+                    //prekresli dosavadni cestu
+                    int cycle = ((vertexPos.getSize() / 2) - 1);
+                    for (int i = 0; i < cycle; i++) {
+                        renderer.drawLineDDA(vertexPos.getX(0+i*2), vertexPos.getY(1+i*2), vertexPos.getX(2+i*2), vertexPos.getY(3+i*2), 0xffffff);
+                    }
                 }
             }
         });
@@ -69,16 +79,18 @@ public class PixelTest {
             }
         });
 
-        canvas.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                //pri zmacknuti klavesy C se vymaže canvas
-                if (e.getKeyCode() == KeyEvent.VK_C) {
-                    renderer.clear();
-                    vertexPos.clear();
-                }
-            }
-        });
+        canvas.addKeyListener(new
+
+          KeyAdapter() {
+              @Override
+              public void keyPressed(KeyEvent e) {
+                  //pri zmacknuti klavesy C se vymaže canvas
+                  if (e.getKeyCode() == KeyEvent.VK_C) {
+                      renderer.clear();
+                      vertexPos.clear();
+                  }
+              }
+          });
         canvas.requestFocus();
     }
 
