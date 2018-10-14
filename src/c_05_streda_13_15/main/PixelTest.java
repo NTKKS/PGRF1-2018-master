@@ -116,6 +116,13 @@ public class PixelTest {
                         circle.click();
                         circle.addPoint(f.getX(), f.getY());
                         renderer.drawLineDDA(circle.getX(0),circle.getY(0),circle.getX(1),circle.getY(1), 0x0000ff);
+                    } else if (circle.size() == 2) {
+                        //TODO
+                        circle.getVert();
+                        System.out.println(circle.size());
+                        for (int i = 2;i<4;i++){
+                            renderer.drawPixel(circle.getX(i),circle.getY(i),0xffffff);
+                        }
                     }
 
                 }
