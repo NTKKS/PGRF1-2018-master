@@ -16,7 +16,6 @@ public class VertexPos {
     public void addPos(int x, int y) {
         pos.add(x);
         pos.add(y);
-        System.out.println(pos);
     }
 
     public void clear() {
@@ -35,7 +34,7 @@ public class VertexPos {
         return pos.get(temp);
     }
 
-    public int getX(int index){
+    public int getX(int index) {
         return pos.get(index);
     }
 
@@ -45,18 +44,19 @@ public class VertexPos {
         return pos.get(temp2);
     }
 
-    public int getY(int index){
+    public int getY(int index) {
         return pos.get(index);
     }
 
-    public int getSize(){
+    public int getSize() {
         return pos.size();
     }
 
-    public int lastX(){
-        return pos.get(temp+2);
+    public int lastX() {
+        return pos.get(temp + 2);
     }
-    public int lastY(){
-        return pos.get(temp2+2);
+
+    public int lastY() {
+        return pos.get(temp2 + 2);
     }
 }
