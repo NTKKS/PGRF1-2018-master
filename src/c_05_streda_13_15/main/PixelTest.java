@@ -112,21 +112,18 @@ public class PixelTest {
                     if (circle.size() == 0) {
                         circle.addPoint(f.getX(), f.getY());
                         circle.click();
-                        System.out.println(circle.size());
                     } else if (circle.size() == 1) {
                         circle.click();
-                        System.out.println(circle.size());
+                        circle.addPoint(f.getX(), f.getY());
                         renderer.drawLineDDA(circle.getX(0),circle.getY(0),circle.getX(1),circle.getY(1), 0x0000ff);
-                        System.out.println(circle.size());
                     }
 
                 }
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseMoved(MouseEvent e) {
-                        if (circle.size() < 2) {
+                        if (circle.size() == 1) {
                             renderer.clear();
-                            //renderer.drawLineDDA(vertexPos.getX(0), vertexPos.getY(1), e.getX(), e.getY(), 0xff00ff);
                             renderer.drawLineDDA(circle.getX(0), circle.getY(0), e.getX(), e.getY(), 0xff00ff);
                         }
                     }
