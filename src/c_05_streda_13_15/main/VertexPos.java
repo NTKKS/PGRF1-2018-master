@@ -6,6 +6,8 @@ public class VertexPos {
     private ArrayList<Integer> pos = new ArrayList<>();
     private int nextX = 0;
     private int nextY = 1;
+    private int temp = nextX;
+    private int temp2 = nextY;
 
     public VertexPos() {
         this.pos = pos;
@@ -14,6 +16,7 @@ public class VertexPos {
     public void addPos(int x, int y) {
         pos.add(x);
         pos.add(y);
+        System.out.println(pos);
     }
 
     public void clear() {
@@ -27,7 +30,7 @@ public class VertexPos {
     }
 
     public int getX() {
-        int temp = nextX;
+        temp = nextX;
         nextX += 2;
         return pos.get(temp);
     }
@@ -37,7 +40,7 @@ public class VertexPos {
     }
 
     public int getY() {
-        int temp2 = nextY;
+        temp2 = nextY;
         nextY += 2;
         return pos.get(temp2);
     }
@@ -50,4 +53,10 @@ public class VertexPos {
         return pos.size();
     }
 
+    public int lastX(){
+        return pos.get(temp+2);
+    }
+    public int lastY(){
+        return pos.get(temp2+2);
+    }
 }

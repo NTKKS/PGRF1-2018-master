@@ -44,7 +44,7 @@ public class PixelTest {
 
         canvas.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
                 //vykresleni jednoho pixelu kliknutím
                 renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
                 //pridej vrchol do listu
@@ -59,7 +59,7 @@ public class PixelTest {
                     //prekresli dosavadni cestu
                     int cycle = ((vertexPos.getSize() / 2) - 1);
                     for (int i = 0; i < cycle; i++) {
-                        renderer.drawLineDDA(vertexPos.getX(0+i*2), vertexPos.getY(1+i*2), vertexPos.getX(2+i*2), vertexPos.getY(3+i*2), 0xffffff);
+                        renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
                     }
                 }
             }
@@ -68,12 +68,27 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent f) {
+                if (vertexPos.getSize() == 0) {
+                    vertexPos.addPos(f.getX(), f.getY());
+                }
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         renderer.clear();
-                        vertexPos.clear();
-                        renderer.drawLineDDA(f.getX(), f.getY(), e.getX(), e.getY(), 0xffffff);
+                        //vertexPos.clear();
+                        if (vertexPos.getSize() <= 2) {
+                            renderer.drawLineDDA(vertexPos.getX(0), vertexPos.getY(1), e.getX(), e.getY(), 0xffffff);
+                        } else {
+                            //natahni dalsi lajnu
+                            renderer.drawLineDDA(vertexPos.lastX(), vertexPos.lastY(), e.getX(), e.getY(), 0xff0000);
+                            //uzavri n-uhelnik
+                            renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xff0000);
+
+                            int cycle = ((vertexPos.getSize() / 2) - 1);
+                            for (int i = 0; i < cycle; i++) {
+                                renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
+                            }
+                        }
                     }
                 });
             }
@@ -81,16 +96,16 @@ public class PixelTest {
 
         canvas.addKeyListener(new
 
-          KeyAdapter() {
-              @Override
-              public void keyPressed(KeyEvent e) {
-                  //pri zmacknuti klavesy C se vymaže canvas
-                  if (e.getKeyCode() == KeyEvent.VK_C) {
-                      renderer.clear();
-                      vertexPos.clear();
-                  }
-              }
-          });
+                                      KeyAdapter() {
+                                          @Override
+                                          public void keyPressed(KeyEvent e) {
+                                              //pri zmacknuti klavesy C se vymaže canvas
+                                              if (e.getKeyCode() == KeyEvent.VK_C) {
+                                                  renderer.clear();
+                                                  vertexPos.clear();
+                                              }
+                                          }
+                                      });
         canvas.requestFocus();
     }
 
