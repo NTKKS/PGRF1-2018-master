@@ -12,51 +12,62 @@ public class Circle {
     private int angle;
 
     public Circle() {
-        this.point = point;
     }
 
-    public void addPoint(int x, int y){
-        Point2 vertex = new Point2(x,y);
+    public void addPoint(int x, int y) {
+        Point2 vertex = new Point2(x, y);
         point.add(vertex);
     }
 
-    public int getX(int index){
+    public int getX(int index) {
         Point2 at = point.get(index);
         return at.getX();
     }
 
-    public int getY(int index){
+    public int getY(int index) {
         Point2 at = point.get(index);
         return at.getY();
     }
 
-    public void click(){
+    public void click() {
         clicks++;
     }
 
-    public int getR(){
-        dx = Math.abs(getX(0)-getX(1));
-        dy = Math.abs(getY(0)-getY(1));
-        return (Math.max(dx,dy));
+    public int getR() {
+        dx = Math.abs(getX(0) - getX(1));
+        dy = Math.abs(getY(0) - getY(1));
+        return (Math.max(dx, dy));
     }
 
-    public void getVert(){
-        angle = 10;
-        for (float fi = 0;fi<=Math.PI/2;fi+=angle){
-            int x = (int)(getR()*Math.cos(fi));
-            int y = (int)(getR()*Math.sin(fi));
-            Point2 vert = new Point2(x,y);
-            point.add(vert);
-            System.out.println("fi "+fi);
+    public void getVert() {
+
+        double a = getY(0)-getY(1);
+        a = a/getR();
+        int baseDeg = (int) Math.toDegrees(Math.asin(a));
+        angle = 45+baseDeg;
+        double rad = Math.toRadians(angle);
+        int r = getR();
+        for (double i = rad; i <= Math.toRadians(360); i += rad) {
+            int x = (int) (r * Math.cos(i));
+            int y = (int) (r * Math.sin(i));
+            x += getX(0);
+            y += getY(0);
+            Point2 pt = new Point2(x, y);
+            point.add(pt);
+            //TODO
+            //vyřešit pro jine uhle 90 +
         }
-        System.out.println(size());
     }
 
-    public int size(){
+    public int clickCount() {
         return clicks;
     }
 
-    public void clear(){
+    public int getSize(){
+        return point.size();
+    }
+
+    public void clear() {
         clicks = 0;
         point.clear();
     }

@@ -109,27 +109,29 @@ public class PixelTest {
             @Override
             public void mouseClicked(MouseEvent f) {
                 if (f.getModifiers() == MouseEvent.BUTTON3_MASK) {
-                    if (circle.size() == 0) {
+                    if (circle.clickCount() == 0) {
                         circle.addPoint(f.getX(), f.getY());
                         circle.click();
-                    } else if (circle.size() == 1) {
+                    } else if (circle.clickCount() == 1) {
                         circle.click();
                         circle.addPoint(f.getX(), f.getY());
-                        renderer.drawLineDDA(circle.getX(0),circle.getY(0),circle.getX(1),circle.getY(1), 0x0000ff);
-                    } else if (circle.size() == 2) {
+                        renderer.drawLineDDA(circle.getX(0), circle.getY(0), circle.getX(1), circle.getY(1), 0x0000ff);
+                    } else if (circle.clickCount() == 2) {
                         //TODO
                         circle.getVert();
-                        System.out.println(circle.size());
-                        for (int i = 2;i<4;i++){
-                            renderer.drawPixel(circle.getX(i),circle.getY(i),0xffffff);
-                        }
+                        for (int i = 2; i <= 4; i++) {
+                            renderer.drawPixel(circle.getX(i), circle.getY(i), 0xffffff);
+                        }/*
+                        for (int i = 1; i<circle.getSize()-1; i++){
+                            renderer.drawLineDDA(circle.getX(i),circle.getY(i),circle.getX(i+1),circle.getY(i+1),0xff00ff);
+                        }*/
                     }
 
                 }
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseMoved(MouseEvent e) {
-                        if (circle.size() == 1) {
+                        if (circle.clickCount() == 1) {
                             renderer.clear();
                             renderer.drawLineDDA(circle.getX(0), circle.getY(0), e.getX(), e.getY(), 0xff00ff);
                         }
