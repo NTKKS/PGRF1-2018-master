@@ -3,6 +3,7 @@ package c_05_streda_13_15.main;
 import java.util.ArrayList;
 
 public class VertexPos {
+    //trida s listem vrcholu x,y
     private ArrayList<Integer> pos = new ArrayList<>();
     private int nextX = 0;
     private int nextY = 1;

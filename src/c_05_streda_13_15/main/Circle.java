@@ -5,12 +5,10 @@ import java.util.List;
 
 public class Circle {
     private List<Point2> point = new ArrayList<Point2>();
-    private int clicks = 0;
-    private double dx;
-    private double dy;
-    private double r;
+    private int clicks = 0; //click counter
+    private double dx, dy;
     private double angle;
-    private int n = 3;
+    private double n = 3; //zakladni pocet vrcholu
 
     public Circle() {
     }
@@ -18,10 +16,10 @@ public class Circle {
     public void setN(int i) {
         n += i;
         this.n = n;
-        System.out.println(n);
+        System.out.println("Pocet vrcholu: " + n);
     }
 
-    public int getN() {
+    public double getN() {
         return n;
     }
 
@@ -40,36 +38,39 @@ public class Circle {
         return at.getY();
     }
 
+    // click counter
     public void click() {
         clicks++;
     }
 
+    // vypocet polomeru
     public double getR() {
         dx = Math.abs(getX(0) - getX(1));
         dy = Math.abs(getY(0) - getY(1));
         return (Math.max(dx, dy));
     }
 
+    // vypocet vrcholu a pridani do seznamu
     public void getVert() {
-        //v podstate dx, dy??
+        //v podstate dx, dy
         double x0 = getX(1) - getX(0);
         double y0 = getY(1) - getY(0);
 
-        dx = (getX(0) - getX(1));
-        dy = (getY(0) - getY(1));
-        double fraction = dy / getR();
-
+        //vypocet uhlu a prevedeni na radiany
         angle = 360 / n;
         double rad = Math.toRadians(angle);
         double r = getR();
 
+        //vypocet hran n-uhelniku
         for (double i = rad; i <= Math.toRadians(360); i += rad) {
-            //apply magic
+            //matrix rotation formula
             double x = x0 * Math.cos(i) - y0 * Math.sin(i);
             double y = x0 * Math.sin(i) + y0 * Math.cos(i);
 
+            //posun na pocatek n-uhleniku
             x += getX(0);
             y += getY(0);
+            //pridej vrchol do seznamu
             Point2 pt = new Point2((int) x, (int) y);
             point.add(pt);
         }

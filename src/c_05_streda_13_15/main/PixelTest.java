@@ -51,11 +51,8 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
+                //nastaveni pro klikani levym tlacitkem mysi
                 if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-
-                    //SeedFiller vyplneni barvou
-                    seedFiller.init(e.getX(),e.getY(),0xff00ff);
-                    seedFiller.fill();
 
                     //vykresleni jednoho pixelu kliknutím
                     renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
@@ -83,6 +80,7 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent f) {
+                //nastaveni pro klikani levym tlacitkem mysi
                 if (f.getModifiers() == MouseEvent.BUTTON1_MASK) {
                     //prvni hrana
                     if (vertexPos.getSize() == 0) {
@@ -92,6 +90,7 @@ public class PixelTest {
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseDragged(MouseEvent e) {
+                        //nastaveni pro klikani levym tlacitkem mysi
                         if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
                             renderer.clear();
                             if (vertexPos.getSize() <= 2) {
@@ -117,27 +116,42 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent f) {
+                //nastaveni pro klikani pravym tlacitkem mysi
                 if (f.getModifiers() == MouseEvent.BUTTON3_MASK) {
+                    //pridani pocatku
                     if (circle.clickCount() == 0) {
                         circle.addPoint(f.getX(), f.getY());
                         circle.click();
-                    } else if (circle.clickCount() == 1) {
+                    }
+                    //nastaveni polomeru a uhlu
+                    else if (circle.clickCount() == 1) {
                         circle.click();
                         circle.addPoint(f.getX(), f.getY());
                         renderer.drawLineDDA(circle.getX(0), circle.getY(0), circle.getX(1), circle.getY(1), 0x0000ff);
-                    } else if (circle.clickCount() == 2) {
-
+                    }
+                    //vykresleni nGonu
+                    else if (circle.clickCount() == 2) {
+                        //smaze caru polomeru, vypocte vrcholy
                         circle.getVert();
-
+                        renderer.clear();
+                        //vykresleni vrcholu
                         for (int i = 2; i <= 2; i++) {
                             renderer.drawPixel(circle.getX(i), circle.getY(i), 0xffffff);
                         }
+                        //spojeni vrcholu carou
                         for (int i = 1; i < circle.getSize() - 1; i++) {
                             renderer.drawLineDDA(circle.getX(i), circle.getY(i), circle.getX(i + 1), circle.getY(i + 1), 0xff00ff);
                         }
-                    }
+                        renderer.drawLineDDA(circle.getX(circle.getSize() - 1), circle.getY(circle.getSize() - 1), circle.getX(1), circle.getY(1), 0xff00ff);
+
+                    } /*else {
+                        //SeedFiller vyplneni barvou (wip)
+                        seedFiller.init(f.getX(), f.getY(), 0xff00ff);
+                        seedFiller.fill();
+                    }*/
 
                 }
+                //prekreslovani cary pohybem mysi
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseMoved(MouseEvent e) {
@@ -165,7 +179,7 @@ public class PixelTest {
                                           }
                                       });
 
-        //zvyseni poctu vrcholu sipkama
+        //zvyseni poctu vrcholu sipkou nahoru
         canvas.addKeyListener(new
 
                                       KeyAdapter() {
@@ -177,7 +191,7 @@ public class PixelTest {
                                               }
                                           }
                                       });
-        //snizeni poctu vrcholu sipkama
+        //snizeni poctu vrcholu sipkou dolu
         canvas.addKeyListener(new
 
                                       KeyAdapter() {
