@@ -16,6 +16,7 @@ public class PixelTest {
     private Renderer renderer; //implementace vykreslovacich algoritmu
     private VertexPos vertexPos; //pro ukladani vrcholu n-uhelniku
     private Circle circle; // pro ukladani vrcholu vepsanych kruznici
+    private SeedFiller seedFiller;
 
     public PixelTest() {
         window = new JFrame();
@@ -38,6 +39,8 @@ public class PixelTest {
         renderer = new Renderer(img, canvas);
         vertexPos = new VertexPos();
         circle = new Circle();
+        seedFiller = new SeedFiller();
+        seedFiller.setBufferedImage(img);
 
         //zkusebni vykresleni
         //renderer.drawPixel(100, 50, Color.GREEN.getRGB());
@@ -48,25 +51,31 @@ public class PixelTest {
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-            if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-                //vykresleni jednoho pixelu kliknutím
-                renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
-                //pridej vrchol do listu
-                vertexPos.addPos(e.getX(), e.getY());
-                //po zadani druheho vrcholu
-                if (vertexPos.ready()) {
-                    renderer.clear();
-                    //dalsi vrchol
-                    renderer.drawLineDDA(vertexPos.getX(), vertexPos.getY(), e.getX(), e.getY(), 0xffffff);
-                    //uzavri n-uhelnik
-                    renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xffffff);
-                    //prekresli dosavadni cestu
-                    int cycle = ((vertexPos.getSize() / 2) - 1);
-                    for (int i = 0; i < cycle; i++) {
-                        renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
+                if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
+
+                    //SeedFiller vyplneni barvou
+                    seedFiller.init(e.getX(),e.getY(),0xff00ff);
+                    seedFiller.fill();
+
+                    //vykresleni jednoho pixelu kliknutím
+                    renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+                    //pridej vrchol do listu
+                    vertexPos.addPos(e.getX(), e.getY());
+                    //po zadani druheho vrcholu
+                    if (vertexPos.ready()) {
+                        renderer.clear();
+                        //dalsi vrchol
+                        renderer.drawLineDDA(vertexPos.getX(), vertexPos.getY(), e.getX(), e.getY(), 0xffffff);
+                        //uzavri n-uhelnik
+                        renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xffffff);
+                        //prekresli dosavadni cestu
+                        int cycle = ((vertexPos.getSize() / 2) - 1);
+                        for (int i = 0; i < cycle; i++) {
+                            renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
+                        }
+
                     }
                 }
-            }
             }
         });
 
@@ -83,28 +92,28 @@ public class PixelTest {
                 canvas.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseDragged(MouseEvent e) {
-                    if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-                        renderer.clear();
-                        if (vertexPos.getSize() <= 2) {
-                            renderer.drawLineDDA(vertexPos.getX(0), vertexPos.getY(1), e.getX(), e.getY(), 0xffffff);
-                        } else {
-                            //natahni dalsi lajnu
-                            renderer.drawLineDDA(vertexPos.lastX(), vertexPos.lastY(), e.getX(), e.getY(), 0xff0000);
-                            //uzavri n-uhelnik
-                            renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xff0000);
-                            //prekresli dosavadni hrany
-                            int cycle = ((vertexPos.getSize() / 2) - 1);
-                            for (int i = 0; i < cycle; i++) {
-                                renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
+                        if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
+                            renderer.clear();
+                            if (vertexPos.getSize() <= 2) {
+                                renderer.drawLineDDA(vertexPos.getX(0), vertexPos.getY(1), e.getX(), e.getY(), 0xffffff);
+                            } else {
+                                //natahni dalsi lajnu
+                                renderer.drawLineDDA(vertexPos.lastX(), vertexPos.lastY(), e.getX(), e.getY(), 0xff0000);
+                                //uzavri n-uhelnik
+                                renderer.drawLineDDA(e.getX(), e.getY(), vertexPos.getX(0), vertexPos.getY(1), 0xff0000);
+                                //prekresli dosavadni hrany
+                                int cycle = ((vertexPos.getSize() / 2) - 1);
+                                for (int i = 0; i < cycle; i++) {
+                                    renderer.drawLineDDA(vertexPos.getX(0 + i * 2), vertexPos.getY(1 + i * 2), vertexPos.getX(2 + i * 2), vertexPos.getY(3 + i * 2), 0xffffff);
+                                }
                             }
                         }
-                    }
                     }
                 });
             }
         });
 
-        //nGon zadany trema body
+        //nGon zadany trema body klikanim
         canvas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent f) {
@@ -144,17 +153,44 @@ public class PixelTest {
         //cisteni canvasu a seznamu vrcholu
         canvas.addKeyListener(new
 
-          KeyAdapter() {
-              @Override
-              public void keyPressed(KeyEvent e) {
-                  //pri zmacknuti klavesy C se vymaže canvas
-                  if (e.getKeyCode() == KeyEvent.VK_C) {
-                      renderer.clear();
-                      vertexPos.clear();
-                      circle.clear();
-                  }
-              }
-          });
+                                      KeyAdapter() {
+                                          @Override
+                                          public void keyPressed(KeyEvent e) {
+                                              //pri zmacknuti klavesy C se vymaže canvas
+                                              if (e.getKeyCode() == KeyEvent.VK_C) {
+                                                  renderer.clear();
+                                                  vertexPos.clear();
+                                                  circle.clear();
+                                              }
+                                          }
+                                      });
+
+        //zvyseni poctu vrcholu sipkama
+        canvas.addKeyListener(new
+
+                                      KeyAdapter() {
+                                          @Override
+                                          public void keyPressed(KeyEvent e) {
+                                              //pri zmacknuti klavesy C se vymaže canvas
+                                              if (e.getKeyCode() == KeyEvent.VK_UP) {
+                                                  circle.setN(1);
+                                              }
+                                          }
+                                      });
+        //snizeni poctu vrcholu sipkama
+        canvas.addKeyListener(new
+
+                                      KeyAdapter() {
+                                          @Override
+                                          public void keyPressed(KeyEvent e) {
+                                              //pri zmacknuti klavesy C se vymaže canvas
+                                              if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                                                  if (circle.getN() > 3) {
+                                                      circle.setN(-1);
+                                                  }
+                                              }
+                                          }
+                                      });
         canvas.requestFocus();
     }
 

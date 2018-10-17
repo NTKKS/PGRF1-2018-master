@@ -15,8 +15,10 @@ public class Circle {
     public Circle() {
     }
 
-    public void setN(int n) {
+    public void setN(int i) {
+        n += i;
         this.n = n;
+        System.out.println(n);
     }
 
     public int getN() {
