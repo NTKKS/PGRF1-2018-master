@@ -1,4 +1,4 @@
-package c_05_streda_13_15.main;
+package cz.uhk.fim.pixeltest;
 
 import java.util.ArrayList;
 import java.util.List;

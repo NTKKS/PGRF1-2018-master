@@ -1,4 +1,4 @@
-package c_05_streda_13_15.main;
+package cz.uhk.fim.pixeltest;
 
 public class Point2 {
     private int x;
