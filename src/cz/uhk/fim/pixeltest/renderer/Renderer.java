@@ -1,28 +1,13 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.renderer;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
+import cz.uhk.fim.pixeltest.view.Raster;
 
 public class Renderer {
-    private BufferedImage img;
-    private Canvas canvas;
-    private static final int FPS = 1000 / 30;
 
-    public Renderer(BufferedImage img, Canvas canvas) {
-        this.img = img;
-        this.canvas = canvas;
-        setLoop();
-    }
+    private Raster raster;
 
-    private void setLoop() {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                canvas.getGraphics().drawImage(img, 0, 0, null);
-            }
-        }, 0, FPS);
+    public Renderer(Raster raster) {
+        this.raster = raster;
     }
 
     //primitivni draLine algoritmus
@@ -43,7 +28,7 @@ public class Renderer {
 
             for (int x = x1; x <= x2; x++) {
                 int y = Math.round(k * x + q);
-                drawPixel(x, y, color);
+                raster.drawPixel(x, y, color);
             }
         } else {
             //řídící osa je y
@@ -55,7 +40,7 @@ public class Renderer {
 
             for (int y = y1; y <= y2; y++) {
                 int x = Math.round((y - q) / k);
-                drawPixel(x, y, color);
+                raster.drawPixel(x, y, color);
             }
         }
     }
@@ -94,22 +79,10 @@ public class Renderer {
         }
 
         for (int i = 0; i <= length; i++) {
-            drawPixel(Math.round(x), Math.round(y), color);
+            raster.drawPixel(Math.round(x), Math.round(y), color);
             x = x + g;
             y = y + h;
         }
-    }
-
-    public void clear() {
-        //vyčisti canvas
-        Graphics g = img.getGraphics();
-        g.setColor(Color.BLACK);
-        g.clearRect(0, 0, 800, 600);
-    }
-
-    public void drawPixel(int x, int y, int color) {
-        //vykresli pixel
-        img.setRGB(x, y, color);
     }
 
 }

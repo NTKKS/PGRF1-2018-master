@@ -1,4 +1,4 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.fill;
 
 import java.awt.image.BufferedImage;
 

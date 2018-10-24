@@ -1,9 +1,12 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.fill;
+
+import cz.uhk.fim.pixeltest.view.Raster;
 
 import java.awt.image.BufferedImage;
 
 public class SeedFiller implements Filler {
 
+    private Raster raster;
     private BufferedImage img;
     private int fillColor, bgColor;
     private int x, y;

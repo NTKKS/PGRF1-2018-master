@@ -1,66 +1,58 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.controller;
 
-import javax.swing.*;
-import java.awt.*;
+import cz.uhk.fim.pixeltest.Circle;
+import cz.uhk.fim.pixeltest.VertexPos;
+import cz.uhk.fim.pixeltest.fill.SeedFiller;
+import cz.uhk.fim.pixeltest.renderer.Renderer;
+import cz.uhk.fim.pixeltest.view.Raster;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
-public class PixelTest {
+public class PGRFController {
 
-    private JFrame window; // hlavní okno
-    private BufferedImage img; // objekt pro zápis pixelů
-    private Canvas canvas; // plátno pro vykreslení BufferedImage
-    private Renderer renderer; //implementace vykreslovacich algoritmu
     private VertexPos vertexPos; //pro ukladani vrcholu n-uhelniku
     private Circle circle; // pro ukladani vrcholu vepsanych kruznici
+    private Raster raster;
+    private Renderer renderer; //implementace vykreslovacich algoritmu
     private SeedFiller seedFiller;
 
-    public PixelTest() {
-        window = new JFrame();
-        // bez tohoto nastavení se okno zavře, ale aplikace stále běží na pozadí
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(800, 600); // velikost okna
-        window.setLocationRelativeTo(null);// vycentrovat okno
-        window.setTitle("PGRF1 cvičení"); // titulek okna
-
-        // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
-        img = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
-
-        // inicializace plátna, do kterého budeme kreslit img
-        canvas = new Canvas();
-
-        window.add(canvas); // vložit plátno do okna
-        window.setVisible(true); // zobrazit okno
+    public PGRFController(Raster raster) {
+        this.raster = raster;
+        initObjects();
+        initListeners();
 
         //inicializace
-        renderer = new Renderer(img, canvas);
+        renderer = new Renderer(raster);
         vertexPos = new VertexPos();
         circle = new Circle();
         seedFiller = new SeedFiller();
-        seedFiller.setBufferedImage(img);
+        //seedFiller.setBufferedImage(img);
 
         //zkusebni vykresleni
         //renderer.drawPixel(100, 50, Color.GREEN.getRGB());
         // 0x00ff00 == Color.GREEN.getRGB()
         //renderer.drawLine(0,1,8,4,0xffff00);
 
+    }
+
+    private void initListeners() {
         //nGon klikanim
-        canvas.addMouseListener(new MouseAdapter() {
+        raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 //nastaveni pro klikani levym tlacitkem mysi
                 if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
 
                     //vykresleni jednoho pixelu kliknutím
-                    renderer.drawPixel(e.getX(), e.getY(), 0xffffff);
+                    raster.drawPixel(e.getX(), e.getY(), 0xffffff);
                     //pridej vrchol do listu
                     vertexPos.addPos(e.getX(), e.getY());
                     //po zadani druheho vrcholu
                     if (vertexPos.ready()) {
-                        renderer.clear();
+                        raster.clear();
                         //dalsi vrchol
                         renderer.drawLineDDA(vertexPos.getX(), vertexPos.getY(), e.getX(), e.getY(), 0xffffff);
                         //uzavri n-uhelnik
@@ -77,7 +69,7 @@ public class PixelTest {
         });
 
         //nGon tazenim
-        canvas.addMouseListener(new MouseAdapter() {
+        raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent f) {
                 //nastaveni pro klikani levym tlacitkem mysi
@@ -87,12 +79,14 @@ public class PixelTest {
                         vertexPos.addPos(f.getX(), f.getY());
                     }
                 }
-                canvas.addMouseMotionListener(new MouseAdapter() {
+                //neni vhodne cpat listenery do sebe, dat je pod sebe
+                //vytvorit promenout bool
+                raster.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         //nastaveni pro klikani levym tlacitkem mysi
                         if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-                            renderer.clear();
+                            raster.clear();
                             if (vertexPos.getSize() <= 2) {
                                 renderer.drawLineDDA(vertexPos.getX(0), vertexPos.getY(1), e.getX(), e.getY(), 0xffffff);
                             } else {
@@ -113,7 +107,7 @@ public class PixelTest {
         });
 
         //nGon zadany trema body klikanim
-        canvas.addMouseListener(new MouseAdapter() {
+        raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent f) {
                 //nastaveni pro klikani pravym tlacitkem mysi
@@ -132,11 +126,12 @@ public class PixelTest {
                     //vykresleni nGonu
                     else if (circle.clickCount() == 2) {
                         //smaze caru polomeru, vypocte vrcholy
+                        circle.click();
                         circle.getVert();
-                        renderer.clear();
+                        raster.clear();
                         //vykresleni vrcholu
                         for (int i = 2; i <= 2; i++) {
-                            renderer.drawPixel(circle.getX(i), circle.getY(i), 0xffffff);
+                            raster.drawPixel(circle.getX(i), circle.getY(i), 0xffffff);
                         }
                         //spojeni vrcholu carou
                         for (int i = 1; i < circle.getSize() - 1; i++) {
@@ -144,19 +139,20 @@ public class PixelTest {
                         }
                         renderer.drawLineDDA(circle.getX(circle.getSize() - 1), circle.getY(circle.getSize() - 1), circle.getX(1), circle.getY(1), 0xff00ff);
 
-                    } /*else {
+                    } else if (circle.clickCount() == 3) {
                         //SeedFiller vyplneni barvou (wip)
+                        circle.click();
                         seedFiller.init(f.getX(), f.getY(), 0xff00ff);
                         seedFiller.fill();
-                    }*/
+                    }
 
                 }
                 //prekreslovani cary pohybem mysi
-                canvas.addMouseMotionListener(new MouseAdapter() {
+                raster.addMouseMotionListener(new MouseAdapter() {
                     @Override
                     public void mouseMoved(MouseEvent e) {
                         if (circle.clickCount() == 1) {
-                            renderer.clear();
+                            raster.clear();
                             renderer.drawLineDDA(circle.getX(0), circle.getY(0), e.getX(), e.getY(), 0xff00ff);
                         }
                     }
@@ -165,14 +161,14 @@ public class PixelTest {
         });
 
         //cisteni canvasu a seznamu vrcholu
-        canvas.addKeyListener(new
+        raster.addKeyListener(new
 
                                       KeyAdapter() {
                                           @Override
                                           public void keyPressed(KeyEvent e) {
                                               //pri zmacknuti klavesy C se vymaže canvas
                                               if (e.getKeyCode() == KeyEvent.VK_C) {
-                                                  renderer.clear();
+                                                  raster.clear();
                                                   vertexPos.clear();
                                                   circle.clear();
                                               }
@@ -180,7 +176,7 @@ public class PixelTest {
                                       });
 
         //zvyseni poctu vrcholu sipkou nahoru
-        canvas.addKeyListener(new
+        raster.addKeyListener(new
 
                                       KeyAdapter() {
                                           @Override
@@ -192,7 +188,7 @@ public class PixelTest {
                                           }
                                       });
         //snizeni poctu vrcholu sipkou dolu
-        canvas.addKeyListener(new
+        raster.addKeyListener(new
 
                                       KeyAdapter() {
                                           @Override
@@ -205,9 +201,18 @@ public class PixelTest {
                                               }
                                           }
                                       });
-        canvas.requestFocus();
+        raster.requestFocus();
     }
 
+
+
+    private void initObjects() {
+        renderer = new Renderer(raster);
+
+        seedFiller = new SeedFiller();
+        seedFiller.setRaster(raster);
+    }
+/*
     private void drawPixel(int x, int y, int color) {
         // nastavit pixel do img
         img.setRGB(x, y, color);
@@ -215,12 +220,6 @@ public class PixelTest {
         canvas.getGraphics().drawImage(img, 0, 0, null);
         // pro zájemce - co dělá observer - https://stackoverflow.com/a/1684476
     }
+*/
 
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(PixelTest::new);
-        // https://www.google.com/search?q=SwingUtilities.invokeLater
-        // https://www.javamex.com/tutorials/threads/invokelater.shtml
-        // https://www.google.com/search?q=java+double+colon
-    }
 }
