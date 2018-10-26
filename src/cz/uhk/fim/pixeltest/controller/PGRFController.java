@@ -38,6 +38,13 @@ public class PGRFController {
 
     }
 
+    private void initObjects() {
+        renderer = new Renderer(raster);
+
+        seedFiller = new SeedFiller();
+        seedFiller.setRaster(raster);
+    }
+
     private void initListeners() {
         //nGon klikanim
         raster.addMouseListener(new MouseAdapter() {
@@ -141,9 +148,9 @@ public class PGRFController {
 
                     } else if (circle.clickCount() == 3) {
                         //SeedFiller vyplneni barvou (wip)
-                        circle.click();
-                        seedFiller.init(f.getX(), f.getY(), 0xff00ff);
+                        seedFiller.init(f.getX(),f.getY(),0xff00ff);
                         seedFiller.fill();
+                        circle.click();
                     }
 
                 }
@@ -204,14 +211,6 @@ public class PGRFController {
         raster.requestFocus();
     }
 
-
-
-    private void initObjects() {
-        renderer = new Renderer(raster);
-
-        seedFiller = new SeedFiller();
-        seedFiller.setRaster(raster);
-    }
 /*
     private void drawPixel(int x, int y, int color) {
         // nastavit pixel do img

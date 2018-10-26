@@ -2,36 +2,33 @@ package cz.uhk.fim.pixeltest.fill;
 
 import cz.uhk.fim.pixeltest.view.Raster;
 
-import java.awt.image.BufferedImage;
-
 public class SeedFiller implements Filler {
 
     private Raster raster;
-    private BufferedImage img;
     private int fillColor, bgColor;
     private int x, y;
+
+    @Override
+    public void setRaster(Raster raster) {
+        this.raster = raster;
+    }
 
     @Override
     public void fill() {
         seed(x, y);
     }
 
-    @Override
-    public void setBufferedImage(BufferedImage image) {
-        this.img = image;
-    }
-
     public void init(int x, int y, int fillColor) {
         this.x = x;
         this.y = y;
         this.fillColor = fillColor;
-        bgColor = img.getRGB(x, y);
+        bgColor = raster.getPixel(x,y);
     }
 
     private void seed(int ax, int ay) {
-        if (ax >= 0 && ay >= 0 && ax < img.getWidth() && ay < img.getHeight()) {
-            if (bgColor == img.getRGB(ax, ay)) {
-                img.setRGB(ax, ay, fillColor);
+        if (ax >= 0 && ay >= 0 && ax < Raster.WIDTH && ay < Raster.HEIGHT) {
+            if (bgColor == raster.getPixel(ax, ay)) {
+                raster.drawPixel(ax, ay, fillColor);
                 seed(ax + 1, ay);
                 seed(ax - 1, ay);
                 seed(ax, ay + 1);

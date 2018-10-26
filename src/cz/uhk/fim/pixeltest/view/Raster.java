@@ -7,13 +7,13 @@ import java.util.TimerTask;
 
 public class Raster extends Canvas {
 
-    private BufferedImage img;
+    private final BufferedImage img;
     private static final int FPS = 1000 / 30;
-    private int width = 800, height = 600;
+    public static final int WIDTH = 800, HEIGHT = 600;
 
     public Raster() {
         // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
-        img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setLoop();
     }
 
@@ -31,7 +31,7 @@ public class Raster extends Canvas {
         //vyčisti canvas
         Graphics g = img.getGraphics();
         g.setColor(Color.BLACK);
-        g.clearRect(0, 0, width, height);
+        g.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
     public void drawPixel(int x, int y, int color) {
