@@ -1,8 +1,8 @@
 package cz.uhk.fim.pixeltest.controller;
 
-import cz.uhk.fim.pixeltest.Circle;
-import cz.uhk.fim.pixeltest.VertexPos;
 import cz.uhk.fim.pixeltest.fill.SeedFiller;
+import cz.uhk.fim.pixeltest.model.NGon;
+import cz.uhk.fim.pixeltest.model.VertexList;
 import cz.uhk.fim.pixeltest.renderer.Renderer;
 import cz.uhk.fim.pixeltest.view.Raster;
 
@@ -13,8 +13,8 @@ import java.awt.event.MouseEvent;
 
 public class PGRFController {
 
-    private VertexPos vertexPos; //pro ukladani vrcholu n-uhelniku
-    private Circle circle; // pro ukladani vrcholu vepsanych kruznici
+    private VertexList vertexPos; //pro ukladani vrcholu n-uhelniku
+    private NGon circle; // pro ukladani vrcholu vepsanych kruznici
     private Raster raster;
     private Renderer renderer; //implementace vykreslovacich algoritmu
     private SeedFiller seedFiller;
@@ -26,8 +26,8 @@ public class PGRFController {
 
         //inicializace
         renderer = new Renderer(raster);
-        vertexPos = new VertexPos();
-        circle = new Circle();
+        vertexPos = new VertexList();
+        circle = new NGon();
         seedFiller = new SeedFiller();
         //seedFiller.setBufferedImage(img);
 
@@ -210,15 +210,5 @@ public class PGRFController {
                                       });
         raster.requestFocus();
     }
-
-/*
-    private void drawPixel(int x, int y, int color) {
-        // nastavit pixel do img
-        img.setRGB(x, y, color);
-        // říct plátnu, aby zobrazil aktuální img
-        canvas.getGraphics().drawImage(img, 0, 0, null);
-        // pro zájemce - co dělá observer - https://stackoverflow.com/a/1684476
-    }
-*/
 
 }

@@ -1,16 +1,16 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Circle {
-    private List<Point2> point = new ArrayList<Point2>();
+public class NGon {
+    private List<Point> point = new ArrayList<Point>();
     private int clicks = 0; //click counter
     private double dx, dy;
     private double angle;
     private double n = 3; //zakladni pocet vrcholu
 
-    public Circle() {
+    public NGon() {
     }
 
     public void setN(int i) {
@@ -24,23 +24,24 @@ public class Circle {
     }
 
     public void addPoint(int x, int y) {
-        Point2 vertex = new Point2(x, y);
+        Point vertex = new Point(x, y);
         point.add(vertex);
     }
 
     public int getX(int index) {
-        Point2 at = point.get(index);
+        Point at = point.get(index);
         return at.getX();
     }
 
     public int getY(int index) {
-        Point2 at = point.get(index);
+        Point at = point.get(index);
         return at.getY();
     }
 
     // click counter
     public void click() {
         clicks++;
+        System.out.println("clicks: "+clicks);
     }
 
     // vypocet polomeru
@@ -71,7 +72,7 @@ public class Circle {
             x += getX(0);
             y += getY(0);
             //pridej vrchol do seznamu
-            Point2 pt = new Point2((int) x, (int) y);
+            Point pt = new Point((int) x, (int) y);
             point.add(pt);
         }
 

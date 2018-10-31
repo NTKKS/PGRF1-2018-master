@@ -1,15 +1,15 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.model;
 
-public class Point2 {
+public class Point {
     private int x;
     private int y;
 
-    public Point2(int x, int y) {
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public Point2() {
+    public Point() {
     }
 
     public int getX() {

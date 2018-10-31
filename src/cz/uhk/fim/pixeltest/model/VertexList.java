@@ -1,8 +1,8 @@
-package cz.uhk.fim.pixeltest;
+package cz.uhk.fim.pixeltest.model;
 
 import java.util.ArrayList;
 
-public class VertexPos {
+public class VertexList {
     //trida s listem vrcholu x,y
     private ArrayList<Integer> pos = new ArrayList<>();
     private int nextX = 0;
@@ -10,7 +10,7 @@ public class VertexPos {
     private int temp = nextX;
     private int temp2 = nextY;
 
-    public VertexPos() {
+    public VertexList() {
         this.pos = pos;
     }
 

@@ -16,7 +16,7 @@ public class Raster extends Canvas {
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setLoop();
     }
-
+    //TODO opravit blikání
     private void setLoop() {
         new Timer().schedule(new TimerTask() {
             @Override
