@@ -1,6 +1,9 @@
 package cz.uhk.fim.pixeltest.renderer;
 
+import cz.uhk.fim.pixeltest.model.Point;
 import cz.uhk.fim.pixeltest.view.Raster;
+
+import java.util.List;
 
 public class Renderer {
 
@@ -84,6 +87,31 @@ public class Renderer {
             y = y + h;
         }
     }
-
+    public void drawPolygon(List<Point> polygonPoints, int color) {
+        for (int i = 0; i < polygonPoints.size() - 1; i++) {
+            drawLineDDA(polygonPoints.get(i).x,
+                    polygonPoints.get(i).y,
+                    polygonPoints.get(i + 1).x,
+                    polygonPoints.get(i + 1).y,
+                    color
+            );
+        }
+        drawLineDDA(polygonPoints.get(0).x,
+                polygonPoints.get(0).y,
+                polygonPoints.get(polygonPoints.size() - 1).x,
+                polygonPoints.get(polygonPoints.size() - 1).y,
+                color
+        );
+    }
+    public void drawLines(List<Point> linePoints, int color) {
+        for (int i = 0; i < linePoints.size() - 1; i+=2) {
+            drawLineDDA(linePoints.get(i).x,
+                    linePoints.get(i).y,
+                    linePoints.get(i + 1).x,
+                    linePoints.get(i + 1).y,
+                    color
+            );
+        }
+    }
 
 }

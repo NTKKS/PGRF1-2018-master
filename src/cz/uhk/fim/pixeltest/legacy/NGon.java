@@ -1,4 +1,6 @@
-package cz.uhk.fim.pixeltest.model;
+package cz.uhk.fim.pixeltest.legacy;
+
+import cz.uhk.fim.pixeltest.model.Point;
 
 import java.util.ArrayList;
 import java.util.List;

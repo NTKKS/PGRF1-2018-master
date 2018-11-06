@@ -1,4 +1,4 @@
-package cz.uhk.fim.pixeltest.model;
+package cz.uhk.fim.pixeltest.legacy;
 
 import java.util.ArrayList;
 

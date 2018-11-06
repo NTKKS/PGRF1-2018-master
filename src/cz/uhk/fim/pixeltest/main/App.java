@@ -7,10 +7,9 @@ import javax.swing.*;
 
 public class App {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(()->{
-           PGRFWindow window = new PGRFWindow();
-           //controler
-            new PGRFController(window.getRaster());
+        SwingUtilities.invokeLater(() -> {
+            PGRFWindow window = new PGRFWindow();
+            new PGRFController(window);
             window.setVisible(true);
         });
         // https://www.google.com/search?q=SwingUtilities.invokeLater

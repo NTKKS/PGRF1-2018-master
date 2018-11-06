@@ -1,46 +1,56 @@
 package cz.uhk.fim.pixeltest.view;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Raster extends Canvas {
+public class Raster extends JPanel {
 
-    private final BufferedImage img;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
     private static final int FPS = 1000 / 30;
-    public static final int WIDTH = 800, HEIGHT = 600;
+    private BufferedImage bi;
 
     public Raster() {
         // inicializace image, nastavení rozměrů (nastavení typu - pro nás nedůležité)
-        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         setLoop();
     }
-    //TODO opravit blikání
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(bi, 0, 0, null);
+        // pro zájemce - co dělá observer - https://stackoverflow.com/a/1684476
+    }
+
     private void setLoop() {
+        // časovač, který 30 krát za vteřinu obnoví obsah plátna aktuálním img
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if (getGraphics() == null) return;
-                getGraphics().drawImage(img, 0, 0, null);
+                // říct plátnu, aby zobrazilo aktuální img
+                repaint();
             }
         }, 0, FPS);
     }
 
     public void clear() {
-        //vyčisti canvas
-        Graphics g = img.getGraphics();
+        // https://stackoverflow.com/a/5843470
+        Graphics g = bi.getGraphics();
         g.setColor(Color.BLACK);
         g.clearRect(0, 0, WIDTH, HEIGHT);
     }
 
     public void drawPixel(int x, int y, int color) {
-        //vykresli pixel
-        img.setRGB(x, y, color);
+        // nastavit pixel do img
+        bi.setRGB(x, y, color);
     }
 
     public int getPixel(int x, int y) {
-        return img.getRGB(x, y);
+        return bi.getRGB(x, y);
     }
 
 }
