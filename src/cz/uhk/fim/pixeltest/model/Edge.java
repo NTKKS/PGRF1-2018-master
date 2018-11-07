@@ -50,4 +50,17 @@ public class Edge {
         return 0;
     }
 
+    public boolean inside(Point point){
+        Point t = new Point(x2-x1, y1-y2);
+        //Point n = new Point(t.y, -t.x);
+        Point n = new Point(-t.y, t.x);
+        Point v = new Point(point.x - x1, point.y-y1);
+        return (v.x*n.x+v.y*n.y<0);
+    }
+
+    public Point getIntersection(Point a,Point b){
+        return null;
+        //TODO
+    }
+
 }

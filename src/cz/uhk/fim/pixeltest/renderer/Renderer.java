@@ -3,6 +3,7 @@ package cz.uhk.fim.pixeltest.renderer;
 import cz.uhk.fim.pixeltest.model.Point;
 import cz.uhk.fim.pixeltest.view.Raster;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Renderer {
@@ -112,6 +113,26 @@ public class Renderer {
                     color
             );
         }
+    }
+
+    public List<Point> clip(List<Point> polygonPoints, List<Point> clipPoints){
+
+        List<Point> in = polygonPoints;
+        Point p1 = null; //vložit poslední clip point
+
+        for (Point p2: clipPoints
+             ) {
+            List<Point> out = new ArrayList<>();
+            //Edge e = //vytvoreni hrany z bodu p1 a p2
+            //Point v1 = ...
+            for (Point v2: in
+                 ) {//TODO algoritmus
+
+            }
+            p1 = p2;
+            in = out;
+        }
+        return in;
     }
 
 }

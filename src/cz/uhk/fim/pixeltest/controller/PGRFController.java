@@ -37,6 +37,9 @@ public class PGRFController {
 
         seedFiller = new SeedFiller();
         seedFiller.setRaster(raster);
+
+        raster.setFocusable(true);
+        raster.grabFocus();
     }
 
     private void initListeners() {
@@ -94,6 +97,7 @@ public class PGRFController {
         renderer.drawLines(linePoints, 0x00ff00);
         renderer.drawPolygon(polygonPoints, 0xff0000);
     }
+
 }
 
 
