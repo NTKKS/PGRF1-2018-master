@@ -1,5 +1,6 @@
 package cz.uhk.fim.pixeltest.renderer;
 
+import cz.uhk.fim.pixeltest.model.Edge;
 import cz.uhk.fim.pixeltest.model.Point;
 import cz.uhk.fim.pixeltest.view.Raster;
 
@@ -115,24 +116,37 @@ public class Renderer {
         }
     }
 
-    public List<Point> clip(List<Point> polygonPoints, List<Point> clipPoints){
+    public List<Point> clip(List<Point> polygon, List<Point> clipPolygon) {
+        // in - seznam vtcholů ořezávaného polygonu (na tabuli je ten černý)
+        // clipPoints - seznam vrcholů ořezávacího polygonu (na tabuli ten zelený)
+        // out - seznam vrcholů ořezaného polygonu (na tabuli ten čárkovaný)
 
-        List<Point> in = polygonPoints;
-        Point p1 = null; //vložit poslední clip point
+        List<Point> in = polygon;
+        Point p1 = clipPolygon.get(clipPolygon.size()-1); // vložit poslední clip point
 
-        for (Point p2: clipPoints
-             ) {
+        for (Point p2 : clipPolygon) {
             List<Point> out = new ArrayList<>();
-            //Edge e = //vytvoreni hrany z bodu p1 a p2
-            //Point v1 = ...
-            for (Point v2: in
-                 ) {//TODO algoritmus
-
+            Edge e = new Edge(p1, p2);
+            Point v1 = in.get(in.size()-1);
+            for (Point v2 : in) {
+                if(e.inside(v2)){
+                    if(!e.inside(v1)){
+                        out.add(e.getIntersection(v1,v2));
+                    }
+                    out.add(v2);
+                }else{
+                    if(e.inside(v1)){
+                        out.add(e.getIntersection(v1,v2));
+                    }
+                }
+                v1 = v2;
             }
             p1 = p2;
-            in = out;
+            in = out; // aktualizuj ořezávaný polygon
         }
         return in;
     }
+
+
 
 }

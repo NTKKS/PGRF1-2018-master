@@ -1,5 +1,6 @@
 package cz.uhk.fim.pixeltest.controller;
 
+import cz.uhk.fim.pixeltest.fill.ScanLine;
 import cz.uhk.fim.pixeltest.fill.SeedFiller;
 import cz.uhk.fim.pixeltest.model.Point;
 import cz.uhk.fim.pixeltest.renderer.Renderer;
@@ -20,7 +21,9 @@ public class PGRFController {
     private Renderer renderer; //implementace vykreslovacich algoritmu
     private SeedFiller seedFiller;
     private List<Point> polygonPoints = new ArrayList<>();
+    private List<Point> clipPoints = new ArrayList<>();
     private List<Point> linePoints = new ArrayList<>();
+    private ScanLine scanLine;
 
     public PGRFController(PGRFWindow window) {
         initObjects(window);
@@ -38,6 +41,9 @@ public class PGRFController {
         seedFiller = new SeedFiller();
         seedFiller.setRaster(raster);
 
+        scanLine = new ScanLine();
+        scanLine.setRaster(raster);
+
         raster.setFocusable(true);
         raster.grabFocus();
     }
@@ -46,22 +52,29 @@ public class PGRFController {
         raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)) {
+                if (SwingUtilities.isLeftMouseButton(e)&&!e.isControlDown()) {
                     polygonPoints.add(new Point(e.getX(), e.getY()));
                     if (polygonPoints.size() == 1) { // při prvním kliknutí přidat rovnou i druhý bod
                         polygonPoints.add(new Point(e.getX(), e.getY()));
                     }
-                } else if (SwingUtilities.isRightMouseButton(e)) {
-                    linePoints.add(new Point(e.getX(), e.getY()));
-                    linePoints.add(new Point(e.getX(), e.getY()));
+                } else if (SwingUtilities.isRightMouseButton(e)&&!e.isControlDown()) {
+                    //linePoints.add(new Point(e.getX(), e.getY()));
+                    //linePoints.add(new Point(e.getX(), e.getY()));
+                    clipPoints.add(new Point(e.getX(), e.getY()));
+                    if (clipPoints.size() == 1) { // při prvním kliknutí přidat rovnou i druhý bod
+                        clipPoints.add(new Point(e.getX(), e.getY()));}
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.isControlDown()) {
+                if (e.isControlDown()&&SwingUtilities.isLeftMouseButton(e)) {
                     seedFiller.init(e.getX(), e.getY(), 0xff00ff);
                     seedFiller.fill();
+                }else if (e.isControlDown()&&SwingUtilities.isRightMouseButton(e)){
+                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000);
+                    scanLine.fill();
+
                 }
             }
         });
@@ -72,8 +85,8 @@ public class PGRFController {
                     polygonPoints.get(polygonPoints.size() - 1).x = e.getX();
                     polygonPoints.get(polygonPoints.size() - 1).y = e.getY();
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    linePoints.get(linePoints.size() - 1).x = e.getX();
-                    linePoints.get(linePoints.size() - 1).y = e.getY();
+                    clipPoints.get(clipPoints.size() - 1).x = e.getX();
+                    clipPoints.get(clipPoints.size() - 1).y = e.getY();
                 }
                 update();
             }
@@ -87,6 +100,7 @@ public class PGRFController {
                     raster.clear();
                     linePoints.clear();
                     polygonPoints.clear();
+                    clipPoints.clear();
                 }
             }
         });
@@ -95,7 +109,12 @@ public class PGRFController {
     private void update() {
         raster.clear();
         renderer.drawLines(linePoints, 0x00ff00);
-        renderer.drawPolygon(polygonPoints, 0xff0000);
+        if (!polygonPoints.isEmpty()){
+            renderer.drawPolygon(polygonPoints, 0xff0000);
+        }
+        if (!clipPoints.isEmpty()){
+            renderer.drawPolygon(clipPoints, 0x0000ff);
+        }
     }
 
 }

@@ -17,15 +17,21 @@ public class Edge {
      * @return true pokud je vodorovná, jinak false
      */
     public boolean isHorizontal() {
-        // TODO y1 = y2
-        return false;
+        return y1 == y2;
     }
 
     /**
      * Zorientuje hranu odshora dolů
      */
     public void orientate() {
-        // TODO prohození, když y1 je vetší než y2
+        if (y1 > y2) {
+            int a1 = x1;
+            int b1 = y1;
+            x1 = x2;
+            y1 = y2;
+            x2 = a1;
+            y2 = b1;
+        }
     }
 
     /**
@@ -35,8 +41,7 @@ public class Edge {
      * @return true pokud průsečík existuje, jinak false
      */
     public boolean intersectionExists(int y) {
-        // TODO y, y1, y2
-        return false;
+        return y >= y1 && y < y2;
     }
 
     /**
@@ -46,21 +51,45 @@ public class Edge {
      * @return souřadnice x
      */
     public int getIntersection(int y) {
-        // TODO vypočítat průsečík pomocí y, k, q (osa Y)
-        return 0;
+        float k,q,x;
+
+        k = (float)(x2 - x1) / (float)(y2 - y1);
+        q = (float)x1 - k * (float)y1;
+
+        x = k*y + q;
+
+        return (int)x;
     }
 
-    public boolean inside(Point point){
-        Point t = new Point(x2-x1, y1-y2);
-        //Point n = new Point(t.y, -t.x);
-        Point n = new Point(-t.y, t.x);
-        Point v = new Point(point.x - x1, point.y-y1);
-        return (v.x*n.x+v.y*n.y<0);
+    /**
+     * Zjistí, na které straně přímky tvořené touto úsečkou se nachází bod z parametru
+     *
+     * @param p testovaný bod
+     * @return true pokud se nachází uvnitř (za předpokladu správné orientace)
+     */
+    public boolean inside(Point p) {
+        Point t = new Point(x2 - x1, y2 - y1);
+        Point n = new Point(t.y, -t.x);
+        //Point n = new Point(-t.y, t.x);
+        Point v = new Point(p.x - x1, p.y - y1);
+        return (v.x * n.x + v.y * n.y < 0);
     }
 
-    public Point getIntersection(Point a,Point b){
-        return null;
-        //TODO
+    /**
+     * Vypočítání průsečíku dvou hran
+     *
+     * @param v1 první bod druhé hrany
+     * @param v2 druhý bod druhé hrany
+     * @return průsečík
+     */
+    public Point getIntersection(Point v1, Point v2) {
+        float x0 = ((v1.x * v2.y - v1.y * v2.x) * (x1 - x2) - (x1 * y2 - y1 * x2) * (v1.x - v2.x))
+                / (float) ((v1.x - v2.x) * (y1 - y2) - (x1 - x2) * (v1.y - v2.y));
+
+        float y0 = ((v1.x * v2.y - v1.y * v2.x) * (y1 - y2) - (x1 * y2 - y1 * x2) * (v1.y - v2.y))
+                / (float) ((v1.x - v2.x) * (y1 - y2) - (x1 - x2) * (v1.y - v2.y));
+
+        return new Point(Math.round(x0), Math.round(y0));
     }
 
 }
