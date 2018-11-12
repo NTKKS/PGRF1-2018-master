@@ -143,6 +143,9 @@ public class Renderer {
             }
             p1 = p2;
             in = out; // aktualizuj ořezávaný polygon
+            if (in.isEmpty()){
+                break;
+            }
         }
         return in;
     }

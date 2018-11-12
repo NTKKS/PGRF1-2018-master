@@ -15,6 +15,7 @@ public class ScanLine implements Filler {
     private int fillColor, edgeColor;
     private List<Point> points;
     private Renderer renderer;
+    private boolean useSample;
 
     @Override
     public void setRaster(Raster raster) {
@@ -23,15 +24,18 @@ public class ScanLine implements Filler {
 
     @Override
     public void fill() {
-        scanLine();
+        if (!points.isEmpty()) {
+            scanLine();
+        }
 
     }
 
-    public void init(List<Point> points, int fillColor, int edgeColor) {
+    public void init(List<Point> points, int fillColor, int edgeColor, boolean useSample) {
         this.points = points;
         this.fillColor = fillColor;
         this.edgeColor = edgeColor;
         renderer = new Renderer(raster);
+        this.useSample = useSample;
     }
 
     private void scanLine() {
@@ -44,7 +48,7 @@ public class ScanLine implements Filler {
                 edges.add(newEdge);
             }
         }
-        Edge newEdge = new Edge(points.get(points.size()-1), points.get(0));
+        Edge newEdge = new Edge(points.get(points.size() - 1), points.get(0));
         if (!newEdge.isHorizontal()) {
             edges.add(newEdge);
         }
@@ -53,8 +57,8 @@ public class ScanLine implements Filler {
         // ...; poslední a 0. bod budou poslední hrana
         // ignorovat vodorovné hrany
         // vyvtořené hrany zorientovat a přidat do seznamu
-        for (Edge e:edges
-             ) {
+        for (Edge e : edges
+        ) {
             e.orientate();
         }
         // najít minimum a maximum pro Y
@@ -75,9 +79,9 @@ public class ScanLine implements Filler {
             // projít všechny hrany
             // pokud hrana má průsečík pro dané Y
             // tak vypočítáme průsečík a uložíme hodnotu do seznamu
-            for (Edge e:edges
-                 ) {
-                if (e.intersectionExists(y)){
+            for (Edge e : edges
+            ) {
+                if (e.intersectionExists(y)) {
                     intersections.add(e.getIntersection(y));
                 }
             }
@@ -88,8 +92,14 @@ public class ScanLine implements Filler {
             // spojení vždy sudého s lichým
             // 0. a 1.; 2. a 3.;...
 
-            for (int i=0;i<intersections.size()-1;i+=2){
-                renderer.drawLineDDA(intersections.get(i),y,intersections.get(i+1),y,fillColor);
+            if (!intersections.isEmpty()) {
+                for (int i = 0; i < intersections.size() - 1; i += 2) {
+                    if (useSample && y % 5 == 0) {
+                        renderer.drawLineDDA(intersections.get(i), y, intersections.get(i + 1), y, 0xffffff);
+                    } else {
+                        renderer.drawLineDDA(intersections.get(i), y, intersections.get(i + 1), y, fillColor);
+                    }
+                }
             }
         }
 

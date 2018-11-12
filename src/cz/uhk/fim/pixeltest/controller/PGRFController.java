@@ -52,12 +52,12 @@ public class PGRFController {
         raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)&&!e.isControlDown()) {
+                if (SwingUtilities.isLeftMouseButton(e)&&!e.isControlDown()&&!e.isShiftDown()) {
                     polygonPoints.add(new Point(e.getX(), e.getY()));
                     if (polygonPoints.size() == 1) { // při prvním kliknutí přidat rovnou i druhý bod
                         polygonPoints.add(new Point(e.getX(), e.getY()));
                     }
-                } else if (SwingUtilities.isRightMouseButton(e)&&!e.isControlDown()) {
+                } else if (SwingUtilities.isRightMouseButton(e)&&!e.isControlDown()&&!e.isShiftDown()) {
                     //linePoints.add(new Point(e.getX(), e.getY()));
                     //linePoints.add(new Point(e.getX(), e.getY()));
                     clipPoints.add(new Point(e.getX(), e.getY()));
@@ -69,12 +69,17 @@ public class PGRFController {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.isControlDown()&&SwingUtilities.isLeftMouseButton(e)) {
-                    seedFiller.init(e.getX(), e.getY(), 0xff00ff);
+                    seedFiller.init(e.getX(), e.getY(), 0xff00ff,false);
                     seedFiller.fill();
                 }else if (e.isControlDown()&&SwingUtilities.isRightMouseButton(e)){
-                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000);
+                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000, false);
                     scanLine.fill();
-
+                }else if (e.isShiftDown()&&SwingUtilities.isRightMouseButton(e)){
+                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000, true);
+                    scanLine.fill();
+                }else if(e.isShiftDown()&&SwingUtilities.isLeftMouseButton(e)) {
+                    seedFiller.init(e.getX(), e.getY(), 0xff00ff, true);
+                    seedFiller.fill();
                 }
             }
         });
