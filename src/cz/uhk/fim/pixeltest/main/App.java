@@ -10,6 +10,7 @@ public class App {
         SwingUtilities.invokeLater(() -> {
             PGRFWindow window = new PGRFWindow();
             new PGRFController(window);
+            //new Controller3D(window.getRaster());
             window.setVisible(true);
         });
         // https://www.google.com/search?q=SwingUtilities.invokeLater
