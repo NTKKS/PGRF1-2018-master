@@ -2,12 +2,15 @@ package cz.uhk.fim.pixeltest.model3d;
 
 import transforms.Point3D;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Solid {
-    public List<Point3D> vertices;
-    public List<Integer> indices;
-    private int color;
+
+    List<Point3D> vertices = new ArrayList<>();
+    List<Integer> indices = new ArrayList<>();
+    Color color;
 
     public List<Point3D> getVertices() {
         return vertices;
@@ -17,7 +20,7 @@ public abstract class Solid {
         return indices;
     }
 
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 }

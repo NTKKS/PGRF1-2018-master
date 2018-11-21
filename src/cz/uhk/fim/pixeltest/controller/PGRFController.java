@@ -43,41 +43,39 @@ public class PGRFController {
 
         scanLine = new ScanLine();
         scanLine.setRaster(raster);
-
-        raster.setFocusable(true);
-        raster.grabFocus();
     }
 
     private void initListeners() {
         raster.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)&&!e.isControlDown()&&!e.isShiftDown()) {
+                if (SwingUtilities.isLeftMouseButton(e) && !e.isControlDown() && !e.isShiftDown()) {
                     polygonPoints.add(new Point(e.getX(), e.getY()));
                     if (polygonPoints.size() == 1) { // při prvním kliknutí přidat rovnou i druhý bod
                         polygonPoints.add(new Point(e.getX(), e.getY()));
                     }
-                } else if (SwingUtilities.isRightMouseButton(e)&&!e.isControlDown()&&!e.isShiftDown()) {
+                } else if (SwingUtilities.isRightMouseButton(e) && !e.isControlDown() && !e.isShiftDown()) {
                     //linePoints.add(new Point(e.getX(), e.getY()));
                     //linePoints.add(new Point(e.getX(), e.getY()));
                     clipPoints.add(new Point(e.getX(), e.getY()));
                     if (clipPoints.size() == 1) { // při prvním kliknutí přidat rovnou i druhý bod
-                        clipPoints.add(new Point(e.getX(), e.getY()));}
+                        clipPoints.add(new Point(e.getX(), e.getY()));
+                    }
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.isControlDown()&&SwingUtilities.isLeftMouseButton(e)) {
-                    seedFiller.init(e.getX(), e.getY(), 0xff00ff,false);
+                if (e.isControlDown() && SwingUtilities.isLeftMouseButton(e)) {
+                    seedFiller.init(e.getX(), e.getY(), 0xff00ff, false);
                     seedFiller.fill();
-                }else if (e.isControlDown()&&SwingUtilities.isRightMouseButton(e)){
-                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000, false);
+                } else if (e.isControlDown() && SwingUtilities.isRightMouseButton(e)) {
+                    scanLine.init((renderer.clip(polygonPoints, clipPoints)), 0x00ff00, 0xff0000, false);
                     scanLine.fill();
-                }else if (e.isShiftDown()&&SwingUtilities.isRightMouseButton(e)){
-                    scanLine.init((renderer.clip(polygonPoints,clipPoints)),0x00ff00,0xff0000, true);
+                } else if (e.isShiftDown() && SwingUtilities.isRightMouseButton(e)) {
+                    scanLine.init((renderer.clip(polygonPoints, clipPoints)), 0x00ff00, 0xff0000, true);
                     scanLine.fill();
-                }else if(e.isShiftDown()&&SwingUtilities.isLeftMouseButton(e)) {
+                } else if (e.isShiftDown() && SwingUtilities.isLeftMouseButton(e)) {
                     seedFiller.init(e.getX(), e.getY(), 0xff00ff, true);
                     seedFiller.fill();
                 }
@@ -114,10 +112,10 @@ public class PGRFController {
     private void update() {
         raster.clear();
         renderer.drawLines(linePoints, 0x00ff00);
-        if (!polygonPoints.isEmpty()){
+        if (!polygonPoints.isEmpty()) {
             renderer.drawPolygon(polygonPoints, 0xff0000);
         }
-        if (!clipPoints.isEmpty()){
+        if (!clipPoints.isEmpty()) {
             renderer.drawPolygon(clipPoints, 0x0000ff);
         }
     }

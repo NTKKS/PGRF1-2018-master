@@ -9,15 +9,22 @@ public class Controller3D {
 
     private Raster raster;
     private Renderer3D renderer3D;
+    private Solid cube;
 
     public Controller3D(Raster raster) {
         this.raster = raster;
         initObjects();
+        initListeners();
+        renderer3D.draw(cube);
+    }
+
+    private void initListeners() {
+
     }
 
     private void initObjects() {
         renderer3D = new Renderer3D(raster);
-        Solid cube = new Cube();
-        renderer3D.draw(cube);
+        cube = new Cube();
     }
+
 }
