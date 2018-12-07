@@ -8,6 +8,7 @@ public class Cube extends Solid {
 
     public Cube() {
         color = Color.YELLOW;
+        isAxis = false;
 
         vertices.add(new Point3D(-1, -1, 1));
         vertices.add(new Point3D(1, -1, 1));

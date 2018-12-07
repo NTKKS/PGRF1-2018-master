@@ -11,6 +11,7 @@ public abstract class Solid {
     List<Point3D> vertices = new ArrayList<>();
     List<Integer> indices = new ArrayList<>();
     Color color;
+    boolean isAxis;
 
     public List<Point3D> getVertices() {
         return vertices;
@@ -23,4 +24,7 @@ public abstract class Solid {
     public Color getColor() {
         return color;
     }
+
+    public boolean isAxis() { return isAxis; }
+
 }

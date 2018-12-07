@@ -1,13 +1,9 @@
 package cz.uhk.fim.pixeltest.controller;
 
-import cz.uhk.fim.pixeltest.model3d.Cube;
-import cz.uhk.fim.pixeltest.model3d.Solid;
+import cz.uhk.fim.pixeltest.model3d.*;
 import cz.uhk.fim.pixeltest.renderer.Renderer3D;
 import cz.uhk.fim.pixeltest.view.Raster;
-import transforms.Camera;
-import transforms.Mat4;
-import transforms.Mat4RotXYZ;
-import transforms.Vec3D;
+import transforms.*;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -17,33 +13,39 @@ import java.awt.event.MouseEvent;
 
 public class Controller3D {
 
-    private int mx,my;
-    //private Raster raster;
+    private int mx, my;
     private final Renderer3D renderer3D;
-    private Solid cube;
+    private Solid cube, pyramid,xaxis, yaxis, zaxis;
     private Camera camera;
+    private boolean persp = true;
 
     public Controller3D(Raster raster) {
-        //this.raster = raster;
-        renderer3D = new Renderer3D(raster);
+        renderer3D = new Renderer3D(raster, persp);
         initObjects();
         initListeners(raster);
     }
 
-    private void resetCamera(){
+    private void resetCamera() {
         camera = new Camera(
-                new Vec3D(0,-5,4),
+                new Vec3D(0, -5, 4),
                 Math.toRadians(90),//atimuth
                 Math.toRadians(-40),//zenith
-                1,true
+                1, true
         );
         renderer3D.setView(camera.getViewMatrix());
     }
 
     private void initObjects() {
-        //renderer3D = new Renderer3D(raster);
+        xaxis = new XAxis();
+        yaxis = new YAxis();
+        zaxis = new ZAxis();
         cube = new Cube();
+        pyramid = new Pyramid();
+        renderer3D.add(xaxis);
+        renderer3D.add(yaxis);
+        renderer3D.add(zaxis);
         renderer3D.add(cube);
+        renderer3D.add(pyramid);
         resetCamera();
     }
 
@@ -59,30 +61,44 @@ public class Controller3D {
         raster.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e)){
+                //rotace pohledu
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    //azimuth
                     double diff = (mx - e.getX()) / 200.0;
                     double azimuth = camera.getAzimuth() + diff;
                     camera = camera.withAzimuth(azimuth);
-                    //dodělat zenit
-                    double diff2 = my - e.getY() / 200.0;
+                    //zenit
+                    double diff2 = (my - e.getY()) / 200.0;
                     double zenit = camera.getZenith() + diff2;
-                    /*
-                    if (zenit>=0){
-                        zenit = Math.min(((my - e.getY()) / 200.0),Math.PI/2);
-                    }else {
-                        zenit = Math.max(((my - e.getY()) / 200.0),-(Math.PI/2));
-                    }*/
-                    System.out.println(zenit);
-                    System.out.println(azimuth);
+                    //ořez zenitu na <-PI/2,PI/2>
+                    if (zenit > (Math.PI / 2)) {
+                        zenit = (Math.PI / 2);
+                    } else if (zenit < (-(Math.PI / 2))) {
+                        zenit = (-(Math.PI / 2));
+                    }
                     camera = camera.withZenith(zenit);
                     renderer3D.setView(camera.getViewMatrix());
                 }
-
-                else if (SwingUtilities.isRightMouseButton(e)){
-                    double rotX = (mx - e.getX())/-200.0;
-                    double rotY = (my - e.getY())/-200.0;
-                    Mat4 rot = renderer3D.getModel().mul(new Mat4RotXYZ(rotY,0,rotX));
+                //rotace modelu
+                else if (SwingUtilities.isRightMouseButton(e) && (!e.isControlDown())) {
+                    double rotX = (mx - e.getX()) / -200.0;
+                    double rotY = (my - e.getY()) / -200.0;
+                    Mat4 rot = renderer3D.getModel().mul(new Mat4RotXYZ(rotY, 0, rotX));
                     renderer3D.setModel(rot);
+                }
+                //posun modelu
+                else if (SwingUtilities.isMiddleMouseButton(e)) {
+                    double translX = (mx - e.getX()) / -200.0;
+                    double translY = (my - e.getY()) / 200.0;
+                    Mat4 transl = renderer3D.getModel().mul(new Mat4Transl(translX, translY, 0));
+                    renderer3D.setModel(transl);
+                }
+                //zmena meritka modelu
+                else if (SwingUtilities.isRightMouseButton(e) && (e.isControlDown())) {
+                    double scaleX = (1 + (e.getX() - mx) / 200.0);
+                    double scaleY = (1 + (e.getY() - my) / 200.0);
+                    Mat4 scale = renderer3D.getModel().mul(new Mat4Scale(scaleX, scaleY, 1));
+                    renderer3D.setModel(scale);
                 }
 
                 mx = e.getX();
@@ -93,13 +109,34 @@ public class Controller3D {
         raster.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()){
+                switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
-                        case KeyEvent.VK_W:
-                            camera = camera.forward(1);
-                            renderer3D.setView(camera.getViewMatrix());
-                            break;
-                            //doplnit ovladani
+                    case KeyEvent.VK_W:
+                        camera = camera.forward(0.5);
+                        renderer3D.setView(camera.getViewMatrix());
+                        break;
+                    case KeyEvent.VK_DOWN:
+                    case KeyEvent.VK_S:
+                        camera = camera.backward(0.5);
+                        renderer3D.setView(camera.getViewMatrix());
+                        break;
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_A:
+                        camera = camera.left(0.5);
+                        renderer3D.setView(camera.getViewMatrix());
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        camera = camera.right(0.5);
+                        renderer3D.setView(camera.getViewMatrix());
+                        break;
+                    case KeyEvent.VK_R:
+                        resetCamera();
+                        break;
+                    case KeyEvent.VK_P:
+                        persp = !persp;
+                        renderer3D.init(persp);
+
                 }
             }
         });
