@@ -15,7 +15,7 @@ public class Controller3D {
 
     private int mx, my;
     private final Renderer3D renderer3D;
-    private Solid cube, pyramid,xaxis, yaxis, zaxis;
+    private Solid cube, pyramid,xaxis, yaxis, zaxis, spiral,cubic3d;
     private Camera camera;
     private boolean persp = true;
 
@@ -41,11 +41,15 @@ public class Controller3D {
         zaxis = new ZAxis();
         cube = new Cube();
         pyramid = new Pyramid();
+        spiral = new Spiral();
+        cubic3d = new Cubic3D();
         renderer3D.add(xaxis);
         renderer3D.add(yaxis);
         renderer3D.add(zaxis);
         renderer3D.add(cube);
         renderer3D.add(pyramid);
+        renderer3D.add(spiral);
+        renderer3D.add(cubic3d);
         resetCamera();
     }
 
@@ -136,6 +140,7 @@ public class Controller3D {
                     case KeyEvent.VK_P:
                         persp = !persp;
                         renderer3D.init(persp);
+                        renderer3D.setView(camera.getViewMatrix());
 
                 }
             }
