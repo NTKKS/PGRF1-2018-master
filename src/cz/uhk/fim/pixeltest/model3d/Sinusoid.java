@@ -5,18 +5,17 @@ import transforms.Point3D;
 
 import java.awt.*;
 
-public class Spiral extends Solid {
+public class Sinusoid extends Solid {
 
-    public Spiral() {
-        //křivka v cilyndrickych souradnicich
-        //TODO vymyslet další
-        color = Color.MAGENTA;
+    public Sinusoid() {
+
+        color = Color.YELLOW;
         isAxis = false;
         int i = 0;
-        for (double a = 0; a<= Math.PI*10; a+=0.1){
-            double x = Math.cos(a);
-            double y = Math.sin(a);
-            double z = a/20;
+        for (double a = 0; a<= Math.PI/2; a+=0.01){
+            double x = a;
+            double y = 0;
+            double z = Math.sin(a*10);
             vertices.add(new Point3D(x,y,z));
             if (a>0) {
                 indices.add(i);
@@ -26,7 +25,7 @@ public class Spiral extends Solid {
 
         //posunuti objektu
         for (int j = 0; j < vertices.size(); j++) {
-            vertices.set(j,(vertices.get(j).mul(new Mat4Transl(3, 0, -1))));
+            vertices.set(j,(vertices.get(j).mul(new Mat4Transl(-1, 0, 3))));
         }
 
     }

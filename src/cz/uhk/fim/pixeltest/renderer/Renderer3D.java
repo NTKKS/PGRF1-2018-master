@@ -34,6 +34,7 @@ public class Renderer3D {
 
         view = new Mat4ViewRH(e, v, u);
 
+        //persp vs ortho projekce
         if (persp){
             projection = new Mat4PerspRH(
                     Math.PI / 4,

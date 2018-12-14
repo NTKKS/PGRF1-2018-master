@@ -7,7 +7,7 @@ import java.awt.*;
 public class Cube extends Solid {
 
     public Cube() {
-        color = Color.YELLOW;
+        color = Color.ORANGE;
         isAxis = false;
 
         vertices.add(new Point3D(-1, -1, 1));

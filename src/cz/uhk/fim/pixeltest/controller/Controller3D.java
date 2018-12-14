@@ -6,18 +6,21 @@ import cz.uhk.fim.pixeltest.view.Raster;
 import transforms.*;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class Controller3D {
 
     private int mx, my;
+    private int m = 1;
     private final Renderer3D renderer3D;
-    private Solid cube, pyramid,xaxis, yaxis, zaxis, spiral,cubic3d;
+    private Solid cube, pyramid,xaxis, yaxis, zaxis, spiral,sphericalHelix,sinusoid,cubic3d;
     private Camera camera;
     private boolean persp = true;
+    private Mat4 type;
+
+    private static final Mat4 BEZIER = Cubic.BEZIER;
+    private static final Mat4 COONS = Cubic.COONS;
+    private static final Mat4 FERGUSON = Cubic.FERGUSON;
 
     public Controller3D(Raster raster) {
         renderer3D = new Renderer3D(raster, persp);
@@ -35,21 +38,48 @@ public class Controller3D {
         renderer3D.setView(camera.getViewMatrix());
     }
 
+    //pridat modely do sceny
     private void initObjects() {
+
+        //krivky 3 ruznych interpolaci
+        for (int i = 0; i < 3; i++) {
+            m=i;
+            switch (m){
+                case 1:
+                    type = BEZIER;
+                    break;
+                case 2:
+                    type = COONS;
+                    break;
+                case 0:
+                    type = FERGUSON;
+                    break;
+            }
+            cubic3d = new Cubic3D(type);
+            renderer3D.add(cubic3d);
+        }
+        //world gizmo
         xaxis = new XAxis();
         yaxis = new YAxis();
         zaxis = new ZAxis();
+        //wire primitives
         cube = new Cube();
         pyramid = new Pyramid();
+        //cartezska krivka
+        sinusoid = new Sinusoid();
+        //cylindricka krivka
         spiral = new Spiral();
-        cubic3d = new Cubic3D();
+        //sphericka krivka
+        sphericalHelix = new SphericalHelix();
+
         renderer3D.add(xaxis);
         renderer3D.add(yaxis);
         renderer3D.add(zaxis);
-        renderer3D.add(cube);
         renderer3D.add(pyramid);
+        renderer3D.add(sinusoid);
         renderer3D.add(spiral);
-        renderer3D.add(cubic3d);
+        renderer3D.add(sphericalHelix);
+        renderer3D.add(cube);
         resetCamera();
     }
 
@@ -110,10 +140,22 @@ public class Controller3D {
             }
         });
 
+        //zoom model (meritko)
+        raster.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                double zoom = (1 + (e.getWheelRotation())/20.0);
+                Mat4 scale = renderer3D.getModel().mul(new Mat4Scale(zoom,zoom,zoom));
+                renderer3D.setModel(scale);
+            }
+        });
+
+
         raster.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
+                    //ovladani translace kamery
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_W:
                         camera = camera.forward(0.5);
@@ -134,9 +176,11 @@ public class Controller3D {
                         camera = camera.right(0.5);
                         renderer3D.setView(camera.getViewMatrix());
                         break;
+                    //reset kamery
                     case KeyEvent.VK_R:
                         resetCamera();
                         break;
+                    //prepnuti mezi persp a ortho projekci
                     case KeyEvent.VK_P:
                         persp = !persp;
                         renderer3D.init(persp);
